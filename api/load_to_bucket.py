@@ -1,14 +1,13 @@
 from minio import Minio
-from config import url_endpoint, access_key, secret_key
+from .config import url_endpoint, access_key, secret_key
+import json
+from io import BytesIO
 
-
-def load_to_s3():
+def load_to_bucket(data):
   
-  bucket_name = 'working-bucket'
+  bucket_name = 'final-bucket'
   folder_path = 'raw'
   object_name = f"{folder_path}/countries_raw.json"
-
-  data_df = 'api/data_bank/countries_data_raw.json'
 
 
   client = Minio(
@@ -18,7 +17,7 @@ def load_to_s3():
     secure=False # Set to False if using HTTP
   )
   
-  
+    
   if not client.bucket_exists(bucket_name):
     client.make_bucket(bucket_name)
     print(f"Created bucket {bucket_name}")
@@ -26,12 +25,18 @@ def load_to_s3():
     print(f"Bucket {bucket_name} already exists")
 
 
-  client.fput_object(
-    bucket_name,
-    object_name,
-    data_df,
-    content_type="application/json"
+  data = json.dumps(data, ensure_ascii=False).encode("utf-8")
+  data_stream = BytesIO(data)
+  data_length = len(data)
+
+
+  # Upload the data stream
+  client.put_object(
+    bucket_name=bucket_name,
+    object_name=object_name,
+    data=data_stream,
+    length=data_length,
+    content_type="application/json",
   )
 
-
-load_to_s3()
+  return None  

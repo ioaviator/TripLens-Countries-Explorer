@@ -1,13 +1,14 @@
 import requests
-from config import urls, data_dir
+from .config import urls
 from requests.exceptions import HTTPError, RequestException
-import json
 import time
 
 
 
 def api_connect():
-
+  
+  complete_data = []
+  
   try:
     response = requests.get(urls['url_1'])
     response.raise_for_status()
@@ -27,12 +28,8 @@ def api_connect():
   except RequestException as req_err:
     print(f"A general request error occurred: {req_err}") 
 
-  complete_data = []
 
   for response_1, response_2 in zip(data_1, data_2):
     complete_data.append({**response_1, **response_2})
   
-  with open(f'{data_dir}/countries_data_raw.json', 'w', encoding='utf-8') as file:
-    json.dump(complete_data, file,  ensure_ascii=False, indent=2)
-
-api_connect()
+  return complete_data
