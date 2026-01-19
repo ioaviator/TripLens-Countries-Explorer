@@ -1,0 +1,4 @@
+project:
+    name: triplens_countries_explorer
+postgres:
+    port: 5433

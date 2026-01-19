@@ -1,4 +1,12 @@
-venv
+.git
 .env
-__pycache__
+.DS_Store
+airflow_settings.yaml
+__pycache__/
+astro
+venv
+airflow-webserver.pid
+webserver_config.py
+airflow.cfg
+airflow.db
 data_bank

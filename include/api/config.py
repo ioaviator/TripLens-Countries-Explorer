@@ -11,12 +11,12 @@ urls = {'url_1': "https://restcountries.com/v3.1/all?fields=name,independent,unM
 
 
 # create the data_bank folder where json response data is stored locally
-parent_dir = Path(__file__).resolve().parent
-data_dir = parent_dir / "data_bank"
+# parent_dir = Path(__file__).resolve().parent
+# data_dir = parent_dir / "data_bank"
 
-data_dir.mkdir(parents=True, exist_ok=True)
+# data_dir.mkdir(parents=True, exist_ok=True)
 
 # MinIO endpoints
-url_endpoint = os.getenv('MINIO_ENDPOINT')
+url_endpoint = os.getenv('MINIO_ENDPOINT', 'localhost:9000')
 access_key = os.getenv('MINIO_ROOT_USER')
 secret_key = os.getenv('MINIO_ROOT_PASSWORD')

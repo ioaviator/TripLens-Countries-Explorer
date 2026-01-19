@@ -10,11 +10,14 @@ services:
       - "9001:9001"
     restart: unless-stopped
     command: server /data --console-address ":9001"
+    env_file:
+      - .env
     volumes:
       - minio_data:/data
       - minio_config:/root/.minio
     networks:
       - travel_network
+      - airflow
 
 volumes:
   minio_data:
@@ -22,3 +25,4 @@ volumes:
 
 networks:
   travel_network:
+  airflow:
