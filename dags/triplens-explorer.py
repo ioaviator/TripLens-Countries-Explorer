@@ -5,7 +5,7 @@ from include.main  import main as load_data_to_bucket
 
 default_args = {
   'owner': 'Triplens',
-  'start_date': datetime(2026, 1, 19),
+  'start_date': datetime(2026, 1, 27),
   'retries': 1,
   'retry_delay': timedelta(minutes=1),
   'schedule': '@hourly'
