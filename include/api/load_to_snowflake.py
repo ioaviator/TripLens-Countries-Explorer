@@ -1,12 +1,12 @@
 import snowflake.connector
-from .config import url_endpoint, access_key, secret_key
+from .config import url_endpoint, access_key, secret_key, snow_password, snow_account, snow_user
 import boto3
 import os
 
 ctx = snowflake.connector.connect(
-    user='',
-    password='',
-    account='',
+    user=snow_user,
+    password=snow_password,
+    account=snow_account,
     warehouse='COMPUTE_WH',
     database='TRIPLENS',
     schema='TRIPLENS.RAW'
@@ -23,11 +23,6 @@ client = boto3.client(
       verify=False # Set to False if using HTTP
     )
 
-
-
-SNOWFLAKE_CONN_ID = "snowflake_conn"
-STAGE = "TRIPLENS.RAW.TRIPLENS_INT_STAGE"
-TABLE = "TRIPLENS.RAW.COUNTRIES_RAW"
 
 def transfer_minio_json_to_snowflake(bucket: str, file_key: str, target_table: str) -> None:
 
@@ -69,4 +64,3 @@ def transfer_minio_json_to_snowflake(bucket: str, file_key: str, target_table: s
         # Cleanup local file
         if os.path.exists(local_temp_path):
             os.remove(local_temp_path)
-

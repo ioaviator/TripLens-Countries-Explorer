@@ -20,3 +20,6 @@ urls = {'url_1': "https://restcountries.com/v3.1/all?fields=name,independent,unM
 url_endpoint = os.getenv('MINIO_ENDPOINT', 'localhost:9000')
 access_key = os.getenv('MINIO_ROOT_USER')
 secret_key = os.getenv('MINIO_ROOT_PASSWORD')
+snow_user = os.getenv('SNOW_USER')
+snow_password = os.getenv('SNOW_PASSWORD')
+snow_account = os.getenv('SNOW_ACCOUNT')
