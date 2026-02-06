@@ -1,0 +1,14 @@
+dbt_triplens:
+  outputs:
+    dev:
+      account: account-id
+      database: database
+      password: password
+      role: accountadmin
+      schema: bronze
+      threads: 3
+      type: snowflake
+      user: snowflake_username
+      warehouse: COMPUTE_WH
+  target: dev
+
