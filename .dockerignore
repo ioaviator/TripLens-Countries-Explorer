@@ -7,3 +7,5 @@ logs/
 airflow.db
 airflow.cfg
 venv
+set_env.sh
+profiles.yml
