@@ -7,7 +7,7 @@ from include.api.load_to_bucket import load_to_bucket
 from include.api.load_to_snowflake import transfer_minio_json_to_snowflake
 from cosmos import DbtTaskGroup, ProjectConfig, ProfileConfig, ExecutionConfig
 from cosmos.profiles import SnowflakeUserPasswordProfileMapping
-from airflow.decorators import task 
+from airflow.sdk import task 
 
 
 
@@ -26,7 +26,7 @@ profile_config = ProfileConfig(
   profile_name='default',
   target_name='dev',
   profile_mapping=SnowflakeUserPasswordProfileMapping(
-    conn_id="snowflake_conn",
+    conn_id="snowflake_id",
     profile_args={'database': 'triplens', 'schema': 'raw'},
   ),
 )
@@ -44,6 +44,7 @@ default_args = {
 def extract_data_from_api():
   api_response = api_connect()
   return api_response
+
 
 @task()
 def load_data_to_s3(api_response):
@@ -68,7 +69,7 @@ with DAG(
     
     api_response = extract_data_from_api()
     
-    dbt_snowflake_dag = DbtTaskGroup(
+    transform_data = DbtTaskGroup(
       group_id='transform_data',
       project_config=project_config,
       profile_config=profile_config,
@@ -81,5 +82,5 @@ with DAG(
       api_response 
       >> load_data_to_s3(api_response) 
       >> transfer_to_snowflake()
-      >> dbt_snowflake_dag
+      >> transform_data
     )
