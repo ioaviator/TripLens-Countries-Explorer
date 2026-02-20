@@ -34,17 +34,24 @@ def transfer_minio_json_to_snowflake(bucket: str, file_key: str, target_table: s
     client.download_file(bucket, file_key, local_temp_path)
 
     try:
-        # Step A: Create file format + internal stage
+        # Create file format + internal stage
         cs.execute("USE SCHEMA TRIPLENS.RAW")
-        cs.execute("CREATE OR REPLACE FILE FORMAT my_json_ff TYPE = JSON")
-        cs.execute("CREATE OR REPLACE STAGE my_internal_stage FILE_FORMAT = my_json_ff")
-
-        # Step B: PUT the local file into the Snowflake internal stage
+        cs.execute("CREATE OR REPLACE FILE FORMAT TRIPLENS_JSON_FMT TYPE = JSON")
+        cs.execute("CREATE OR REPLACE STAGE TRIPLENS_STAGE FILE_FORMAT = TRIPLENS_JSON_FMT")
+        cs.execute("""
+            CREATE OR REPLACE TABLE TRIPLENS.RAW.COUNTRIES_RAW (
+                ingestion_ts TIMESTAMP_NTZ,
+                src_file STRING,
+                payload VARIANT
+            );
+        """)
+        # PUT the local file into the Snowflake internal stage
         # AUTO_COMPRESS can be TRUE (Snowflake will gzip it automatically)
-        cs.execute(f"PUT file://{local_temp_path} @my_internal_stage AUTO_COMPRESS=TRUE OVERWRITE=TRUE")
+        cs.execute(f"PUT file://{local_temp_path} @TRIPLENS_STAGE AUTO_COMPRESS=TRUE OVERWRITE=TRUE")
 
-        # Step C: COPY JSON from stage into target table
+        # COPY JSON from stage into target table
         # Loads JSON into a VARIANT column via $1; also captures filename + ingestion time
+        cs.execute(f"TRUNCATE TABLE {target_table};")
         cs.execute(f"""
             COPY INTO {target_table} (ingestion_ts, src_file, payload)
             FROM (
@@ -52,7 +59,7 @@ def transfer_minio_json_to_snowflake(bucket: str, file_key: str, target_table: s
                 CURRENT_TIMESTAMP(),
                 METADATA$FILENAME,
                 $1
-              FROM @my_internal_stage
+              FROM @TRIPLENS_STAGE
             )
             FILE_FORMAT = (TYPE = JSON)
             ON_ERROR = 'ABORT_STATEMENT'

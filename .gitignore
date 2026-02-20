@@ -3,7 +3,7 @@
 .DS_Store
 airflow_settings.yaml
 __pycache__/
-astro
+.astro
 venv
 .venv
 airflow-webserver.pid
@@ -13,3 +13,4 @@ airflow.db
 data_bank
 set_env.sh
 logs
+unset_env.sh
