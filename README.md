@@ -5,6 +5,9 @@
   The goal is to help people quickly understand the essentials about a country before they make their move. 
   Key facts like region, language, currency, time zone, neighboring countries, and other helpful background details that can influence planning and decision-making.
 
+  ## Data Pipeline Architecture
+  ![data pipeline](./assets/data_pipeline.png)
+
   ### Project Setup Guide
   This guide will walk you through setting up the project environment, minio configurations and setting up credentials in Apache Airflow
 

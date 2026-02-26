@@ -14,3 +14,4 @@ data_bank
 set_env.sh
 logs
 unset_env.sh
+queries.sql
