@@ -1,2 +1,3 @@
 
+
 select * from {{source('triplens', 'countries_raw')}}
