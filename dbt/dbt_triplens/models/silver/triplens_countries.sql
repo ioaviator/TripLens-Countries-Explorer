@@ -25,9 +25,9 @@ with countries as (
     country.value:idd.root::STRING AS idd_root,
     country.value:idd.suffixes[0]::STRING AS idd_suffix
   FROM 
-    {{ ref('stg_triplens__countries') }}
-    LATERAL FLATTEN(input => PAYLOAD) country,
-    LATERAL FLATTEN(input => country.value:currencies) currency;
+    {{ ref('stg_triplens__countries') }} AS stg
+    JOIN LATERAL FLATTEN(input => stg.PAYLOAD) country
+    JOIN LATERAL FLATTEN(input => country.value:currencies) currency
 
 )
 

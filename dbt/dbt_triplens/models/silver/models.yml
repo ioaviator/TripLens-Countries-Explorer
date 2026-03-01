@@ -2,11 +2,11 @@ models:
   - name: silver
     columns:
       - name: country_name
-        test:
+        datatest:
           - unique
           - not null
       - name: official_name
-        test:
+        datatest:
           - relationships:
               to: ref('dim_customers') # Test for referential integrity
               field: customer_id
