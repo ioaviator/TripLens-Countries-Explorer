@@ -4,7 +4,6 @@ from requests.exceptions import HTTPError, RequestException
 import time
 
 
-
 def api_connect():
   
   complete_data = []

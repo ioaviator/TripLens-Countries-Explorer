@@ -1,7 +1,9 @@
 import snowflake.connector
-from .config import url_endpoint, access_key, secret_key, snow_password, snow_account, snow_user
+from pathlib import Path
 import boto3
 import os
+
+from .config import url_endpoint, access_key, secret_key, snow_password, snow_account, snow_user
 
 ctx = snowflake.connector.connect(
     user=snow_user,
@@ -26,12 +28,18 @@ client = boto3.client(
 
 def transfer_minio_json_to_snowflake(bucket: str, file_key: str, target_table: str) -> None:
 
-    # Keep just the filename for the local temp path (avoid nested dirs under /tmp)
+   
+    current_dir = Path(__file__).resolve().parent
+
+    # Define your filename
     filename = os.path.basename(file_key)
-    local_temp_path = f"/tmp/{filename}"
+
+    # Create the full path (e.g., iclude/countries_raw.json)
+    local_temp_path = current_dir / filename
 
     # Download from MinIO -> local temp storage
     client.download_file(bucket, file_key, local_temp_path)
+
 
     try:
         # Create file format + internal stage
