@@ -1,10 +1,9 @@
 import os
 from datetime import datetime, timedelta
-from airflow.providers.standard.operators.python import PythonOperator
 from airflow import DAG
-from include.api.extract import api_connect
-from include.api.load_to_bucket import load_to_bucket
-from include.api.load_to_snowflake import transfer_minio_json_to_snowflake
+from include.extract import api_connect
+from include.load_to_bucket import load_to_bucket
+from include.load_to_snowflake import transfer_minio_json_to_snowflake
 from cosmos import DbtTaskGroup, ProjectConfig, ProfileConfig, ExecutionConfig
 from cosmos.profiles import SnowflakeUserPasswordProfileMapping
 from airflow.sdk import task 
@@ -16,7 +15,7 @@ execution_config = ExecutionConfig(
     dbt_executable_path = DBT_EXECUTABLE_PATH
 )
 
-DBT_PROJECT_PATH = f"{os.environ['AIRFLOW_HOME']}/dbt/dbt_triplens"
+DBT_PROJECT_PATH = f"{os.environ['AIRFLOW_HOME']}/dbt/triplens"
 project_config = ProjectConfig(
    dbt_project_path= DBT_PROJECT_PATH,
    manifest_path=f"{DBT_PROJECT_PATH}/target/manifest.json",
@@ -26,14 +25,14 @@ profile_config = ProfileConfig(
   profile_name='default',
   target_name='dev',
   profile_mapping=SnowflakeUserPasswordProfileMapping(
-    conn_id="snowflake_id",
+    conn_id="snowflake_conn",
     profile_args={'database': 'triplens', 'schema': 'raw'},
   ),
 )
 
 default_args = {
   'owner': 'Triplens',
-  'start_date': datetime(2026, 1, 27),
+  'start_date': datetime(2026, 4, 11),
   'retries': 1,
   'retry_delay': timedelta(minutes=1),
   'schedule': '@hourly'

@@ -7,6 +7,6 @@ logs/
 airflow.db
 airflow.cfg
 venv
-set_env.sh
 profiles.yml
+set_env.sh
 unset_env.sh
